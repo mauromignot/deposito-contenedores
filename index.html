@@ -19,8 +19,10 @@
     --c20: #2ecc71;
     --c40: #3498db;
     --cell-size: 48px;
-    --grid-cols: 20;
-    --grid-rows: 12;
+    --grid-cols: 40;
+    --grid-rows: 24;
+    --floor1-color: rgba(46,204,113,0.06);
+    --floor2-color: rgba(52,152,219,0.06);
   }
  
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,38 +38,37 @@
   header {
     background: var(--surface);
     border-bottom: 2px solid var(--accent);
-    padding: 12px 24px;
+    padding: 10px 20px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
     flex-wrap: wrap;
   }
  
   .logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
+    font-size: 26px;
     letter-spacing: 3px;
     color: var(--accent);
     text-shadow: 0 0 20px rgba(245,166,35,0.3);
   }
  
-  .logo span { color: var(--text-dim); font-size: 14px; display: block; font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; margin-top: -4px; }
+  .logo span { color: var(--text-dim); font-size: 12px; display: block; font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; margin-top: -4px; }
  
-  .stats { display: flex; gap: 16px; margin-left: auto; flex-wrap: wrap; align-items: center; }
+  .stats { display: flex; gap: 12px; margin-left: auto; flex-wrap: wrap; align-items: center; }
  
   .stat {
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 6px 14px;
+    padding: 5px 12px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 13px;
+    font-size: 12px;
   }
  
-  .stat .val { color: var(--accent); font-size: 18px; display: block; text-align: center; }
+  .stat .val { color: var(--accent); font-size: 16px; display: block; text-align: center; }
   .stat .lbl { color: var(--text-dim); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
  
-  /* Save status indicator */
   .save-status {
     font-family: 'Share Tech Mono', monospace;
     font-size: 11px;
@@ -81,44 +82,39 @@
   .save-status.saved { color: var(--c20); }
   .save-status.saving { color: var(--accent); }
   .save-status.error { color: var(--danger); }
- 
-  .save-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: currentColor;
-  }
- 
+  .save-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
   .save-status.saving .save-dot { animation: pulse 0.8s infinite; }
  
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
  
-  .app { display: flex; height: calc(100vh - 70px); }
+  .app { display: flex; height: calc(100vh - 62px); }
  
+  /* SIDEBAR */
   .sidebar {
-    width: 220px;
-    min-width: 220px;
+    width: 210px;
+    min-width: 210px;
     background: var(--surface);
     border-right: 1px solid var(--border);
-    padding: 16px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     overflow-y: auto;
   }
  
   .sidebar h3 {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text-dim);
     letter-spacing: 2px;
     text-transform: uppercase;
     border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
+    padding-bottom: 6px;
   }
  
   .container-card {
     border-radius: 8px;
-    padding: 12px;
+    padding: 10px;
     cursor: grab;
     user-select: none;
     border: 2px solid transparent;
@@ -129,23 +125,67 @@
   .container-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
   .container-card.c20 { background: linear-gradient(135deg, #1a4a2e, #0d2b1a); border-color: var(--c20); }
   .container-card.c40 { background: linear-gradient(135deg, #0d2b4a, #071a2e); border-color: var(--c40); }
-  .container-card .size-badge { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; line-height: 1; }
+  .container-card .size-badge { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; line-height: 1; }
   .c20 .size-badge { color: var(--c20); }
   .c40 .size-badge { color: var(--c40); }
-  .container-card .desc { font-size: 11px; color: var(--text-dim); margin-top: 4px; font-family: 'Share Tech Mono', monospace; }
-  .container-card .dims { font-size: 10px; color: var(--text-dim); margin-top: 6px; background: rgba(0,0,0,0.2); padding: 3px 6px; border-radius: 3px; font-family: 'Share Tech Mono', monospace; }
+  .container-card .desc { font-size: 10px; color: var(--text-dim); margin-top: 3px; font-family: 'Share Tech Mono', monospace; }
+  .container-card .dims { font-size: 9px; color: var(--text-dim); margin-top: 4px; background: rgba(0,0,0,0.2); padding: 2px 5px; border-radius: 3px; font-family: 'Share Tech Mono', monospace; }
  
   .drag-hint { font-size: 10px; color: var(--text-dim); text-align: center; opacity: 0.6; }
+ 
+  /* Floor selector */
+  .floor-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+ 
+  .floor-btn {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+ 
+  .floor-btn:hover { border-color: var(--accent); color: var(--text); }
+ 
+  .floor-btn.active.floor1 {
+    border-color: var(--c20);
+    background: rgba(46,204,113,0.12);
+    color: var(--c20);
+  }
+ 
+  .floor-btn.active.floor2 {
+    border-color: #e67e22;
+    background: rgba(230,126,34,0.12);
+    color: #e67e22;
+  }
+ 
+  .floor-icon { font-size: 16px; }
+ 
+  .floor-stats {
+    font-size: 9px;
+    margin-left: auto;
+    opacity: 0.7;
+  }
  
   .orient-btns { display: flex; gap: 6px; }
  
   .orient-btn {
-    flex: 1; padding: 7px;
+    flex: 1; padding: 6px;
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 5px;
     color: var(--text-dim);
-    font-size: 11px;
+    font-size: 10px;
     cursor: pointer;
     font-family: 'Share Tech Mono', monospace;
     transition: all 0.15s;
@@ -154,10 +194,10 @@
  
   .orient-btn.active, .orient-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
  
-  .color-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .color-row { display: flex; gap: 5px; flex-wrap: wrap; }
  
   .color-dot {
-    width: 22px; height: 22px;
+    width: 20px; height: 20px;
     border-radius: 50%;
     cursor: pointer;
     border: 2px solid transparent;
@@ -167,11 +207,11 @@
   .color-dot:hover, .color-dot.active { transform: scale(1.3); border-color: #fff; }
  
   .btn {
-    width: 100%; padding: 9px;
+    width: 100%; padding: 8px;
     border: none; border-radius: 6px;
     cursor: pointer;
     font-family: 'Barlow', sans-serif;
-    font-weight: 700; font-size: 13px;
+    font-weight: 700; font-size: 12px;
     letter-spacing: 1px; text-transform: uppercase;
     transition: all 0.15s;
   }
@@ -181,61 +221,93 @@
   .btn-accent { background: var(--accent); color: #000; }
   .btn-accent:hover { background: #e09400; }
  
+  .delete-zone {
+    border: 1px dashed var(--danger);
+    border-radius: 6px; padding: 8px;
+    text-align: center; font-size: 10px;
+    color: var(--danger);
+    font-family: 'Share Tech Mono', monospace;
+    transition: all 0.15s; cursor: pointer;
+  }
+ 
+  .delete-zone:hover, .delete-zone.drag-over { background: rgba(231,76,60,0.1); }
+  .delete-zone .icon { font-size: 18px; display: block; margin-bottom: 3px; }
+ 
+  .legend { display: flex; gap: 8px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-dim); font-family: 'Share Tech Mono', monospace; }
+  .legend-box { width: 12px; height: 12px; border-radius: 2px; border: 1px solid; }
+ 
+  /* MAIN */
   .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
  
   .toolbar {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 8px 16px;
-    display: flex; align-items: center; gap: 12px;
-    font-size: 12px; color: var(--text-dim);
+    padding: 6px 14px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; color: var(--text-dim);
     font-family: 'Share Tech Mono', monospace;
+    flex-wrap: wrap;
   }
  
-  .toolbar .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--c20);
-    animation: pulse 1.5s infinite;
+  .toolbar .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c20); animation: pulse 1.5s infinite; }
+ 
+  /* Floor tabs */
+  .floor-tabs {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+ 
+  .floor-tab {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    color: var(--text-dim);
+  }
+ 
+  .floor-tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+ 
+  .floor-tab.active.f1 { color: var(--c20); border-bottom-color: var(--c20); background: rgba(46,204,113,0.05); }
+  .floor-tab.active.f2 { color: #e67e22; border-bottom-color: #e67e22; background: rgba(230,126,34,0.05); }
+ 
+  .floor-tab .tab-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    display: block;
+    margin-top: -2px;
+    opacity: 0.7;
   }
  
   .grid-wrap {
-    flex: 1; overflow: auto; padding: 20px;
+    flex: 1; overflow: auto; padding: 16px;
     background: var(--bg);
-    background-image: radial-gradient(circle at 50% 50%, rgba(245,166,35,0.03) 0%, transparent 60%);
   }
  
   .yard-label {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px; letter-spacing: 3px;
-    color: var(--text-dim); margin-bottom: 8px;
+    font-size: 12px; letter-spacing: 3px;
+    margin-bottom: 6px;
     display: flex; align-items: center; gap: 8px;
   }
  
+  .yard-label.f1 { color: var(--c20); }
+  .yard-label.f2 { color: #e67e22; }
   .yard-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
  
   .grid-container { display: flex; }
  
-  .row-labels {
-    display: flex; flex-direction: column;
-    margin-top: calc(var(--cell-size) + 4px);
-  }
+  .row-labels { display: flex; flex-direction: column; margin-top: calc(var(--cell-size) + 4px); }
+  .row-label { height: var(--cell-size); width: 26px; display: flex; align-items: center; justify-content: center; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text-dim); }
  
-  .row-label {
-    height: var(--cell-size); width: 28px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px; color: var(--text-dim);
-  }
- 
-  .col-labels { display: flex; margin-bottom: 4px; margin-left: 28px; }
- 
-  .col-label {
-    width: var(--cell-size); height: 20px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px; color: var(--text-dim);
-  }
+  .col-labels { display: flex; margin-bottom: 4px; margin-left: 26px; }
+  .col-label { width: var(--cell-size); height: 20px; display: flex; align-items: center; justify-content: center; font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text-dim); }
  
   .grid {
     display: grid;
@@ -246,21 +318,38 @@
     position: relative;
   }
  
+  .grid.floor1-grid { background: linear-gradient(var(--floor1-color), var(--floor1-color)), var(--surface); }
+  .grid.floor2-grid { background: linear-gradient(var(--floor2-color), var(--floor2-color)), var(--surface); }
+ 
   .cell {
     width: var(--cell-size); height: var(--cell-size);
-    border: 1px solid rgba(58,64,72,0.5);
+    border: 1px solid rgba(58,64,72,0.4);
     position: relative; transition: background 0.1s;
   }
  
-  .cell.highlight { background: rgba(245,166,35,0.1); border-color: var(--accent); }
-  .cell.invalid { background: rgba(231,76,60,0.15); border-color: var(--danger); }
+  /* Sector lines every 5 cols */
+  .cell[data-c="4"], .cell[data-c="9"], .cell[data-c="14"], .cell[data-c="19"],
+  .cell[data-c="24"], .cell[data-c="29"], .cell[data-c="34"], .cell[data-c="39"] {
+    border-right: 1px solid rgba(58,64,72,0.9);
+  }
+ 
+  .cell[data-r="4"], .cell[data-r="9"], .cell[data-r="14"], .cell[data-r="19"],
+  .cell[data-r="23"] {
+    border-bottom: 1px solid rgba(58,64,72,0.9);
+  }
+ 
+  .cell.highlight { background: rgba(245,166,35,0.12); border-color: var(--accent); }
+  .cell.invalid { background: rgba(231,76,60,0.18); border-color: var(--danger); }
+ 
+  /* Stacked indicator on floor 1 cells */
+  .cell.has-above { background: rgba(230,126,34,0.08); }
  
   .container-piece {
     position: absolute; border-radius: 4px;
     cursor: grab; user-select: none;
     display: flex; align-items: center; justify-content: center;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 14px; letter-spacing: 1px;
+    font-size: 13px; letter-spacing: 1px;
     border: 2px solid;
     transition: box-shadow 0.15s, transform 0.1s;
     z-index: 10; overflow: hidden;
@@ -273,41 +362,39 @@
     background: rgba(255,255,255,0.2);
   }
  
+  /* Floor 2 pieces have diagonal pattern to distinguish */
+  .container-piece.floor2-piece {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 6px,
+      rgba(255,255,255,0.04) 6px,
+      rgba(255,255,255,0.04) 7px
+    ) !important;
+  }
+ 
   .container-piece:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 20; }
   .container-piece:active { cursor: grabbing; transform: scale(1.03); z-index: 30; }
   .container-piece.selected { box-shadow: 0 0 0 2px #fff, 0 4px 20px rgba(0,0,0,0.5); z-index: 25; }
-  .container-piece .piece-id { font-size: 11px; opacity: 0.9; line-height: 1; }
-  .container-piece .piece-size { font-size: 9px; opacity: 0.6; font-family: 'Share Tech Mono', monospace; }
+ 
+  .container-piece .piece-id { font-size: 10px; opacity: 0.9; line-height: 1; }
+  .container-piece .piece-size { font-size: 8px; opacity: 0.55; font-family: 'Share Tech Mono', monospace; }
+  .container-piece .piece-floor { font-size: 8px; font-family: 'Share Tech Mono', monospace; opacity: 0.7; }
  
   .info-panel {
     background: var(--surface);
     border-top: 1px solid var(--border);
-    padding: 8px 16px;
-    display: flex; align-items: center; gap: 20px;
+    padding: 6px 14px;
+    display: flex; align-items: center; gap: 16px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px; color: var(--text-dim);
-    min-height: 36px;
+    font-size: 10px; color: var(--text-dim);
+    min-height: 32px;
   }
  
   .info-panel .selected-info { color: var(--accent); }
   .info-panel .hint { margin-left: auto; opacity: 0.5; }
  
-  .delete-zone {
-    border: 1px dashed var(--danger);
-    border-radius: 6px; padding: 10px;
-    text-align: center; font-size: 11px;
-    color: var(--danger);
-    font-family: 'Share Tech Mono', monospace;
-    transition: all 0.15s; cursor: pointer;
-  }
- 
-  .delete-zone:hover, .delete-zone.drag-over { background: rgba(231,76,60,0.1); }
-  .delete-zone .icon { font-size: 20px; display: block; margin-bottom: 4px; }
- 
-  .legend { display: flex; gap: 12px; flex-wrap: wrap; }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-dim); font-family: 'Share Tech Mono', monospace; }
-  .legend-box { width: 14px; height: 14px; border-radius: 2px; border: 1px solid; }
- 
+  /* Modal */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,0.7); z-index: 100;
@@ -319,67 +406,43 @@
   .modal {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px; padding: 24px; width: 320px;
+    border-radius: 10px; padding: 22px; width: 310px;
     border-top: 3px solid var(--accent);
   }
  
-  .modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; margin-bottom: 16px; color: var(--accent); }
- 
-  .form-group { margin-bottom: 14px; }
-  .form-group label { display: block; font-size: 11px; color: var(--text-dim); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-  .form-group input, .form-group select { width: 100%; padding: 9px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 13px; }
+  .modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; margin-bottom: 14px; color: var(--accent); }
+  .form-group { margin-bottom: 12px; }
+  .form-group label { display: block; font-size: 10px; color: var(--text-dim); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+  .form-group input, .form-group select { width: 100%; padding: 8px 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 12px; }
   .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
- 
-  .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+  .modal-btns { display: flex; gap: 8px; margin-top: 16px; }
   .modal-btns .btn { flex: 1; }
   .btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); }
   .btn-cancel:hover { border-color: var(--text); color: var(--text); }
  
-  /* Loading overlay */
+  /* Loading */
   .loading-overlay {
     position: fixed; inset: 0;
     background: var(--bg);
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    z-index: 200; gap: 16px;
+    z-index: 200; gap: 14px;
   }
  
-  .loading-overlay .loading-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px; letter-spacing: 4px;
-    color: var(--accent);
-  }
+  .loading-overlay .loading-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 4px; color: var(--accent); }
+  .loading-overlay .loading-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 2px; }
+  .loading-bar { width: 200px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .loading-bar-inner { height: 100%; width: 40%; background: var(--accent); border-radius: 2px; animation: loading 1s infinite; }
  
-  .loading-overlay .loading-sub {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 12px; color: var(--text-dim);
-    letter-spacing: 2px;
-  }
+  @keyframes loading { 0%{transform:translateX(-100%)} 100%{transform:translateX(350%)} }
  
-  .loading-bar {
-    width: 200px; height: 3px;
-    background: var(--border); border-radius: 2px; overflow: hidden;
-  }
- 
-  .loading-bar-inner {
-    height: 100%; width: 40%;
-    background: var(--accent); border-radius: 2px;
-    animation: loading 1s infinite;
-  }
- 
-  @keyframes loading {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(350%); }
-  }
- 
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 </style>
 </head>
 <body>
  
-<!-- Loading -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-title">YARD</div>
   <div class="loading-bar"><div class="loading-bar-inner"></div></div>
@@ -387,11 +450,11 @@
 </div>
  
 <header>
-  <div class="logo">YARD<br><span>CONTAINER LAYOUT v2.0 — FIREBASE</span></div>
+  <div class="logo">YARD<br><span>CONTAINER LAYOUT v3.0 — 2 PISOS</span></div>
   <div class="stats">
     <div class="stat"><span class="val" id="stat-total">0</span><span class="lbl">Total</span></div>
-    <div class="stat"><span class="val" id="stat-20" style="color:var(--c20)">0</span><span class="lbl">× 20 pies</span></div>
-    <div class="stat"><span class="val" id="stat-40" style="color:var(--c40)">0</span><span class="lbl">× 40 pies</span></div>
+    <div class="stat"><span class="val" id="stat-p1" style="color:var(--c20)">0</span><span class="lbl">Piso 1</span></div>
+    <div class="stat"><span class="val" id="stat-p2" style="color:#e67e22">0</span><span class="lbl">Piso 2</span></div>
     <div class="stat"><span class="val" id="stat-teu">0</span><span class="lbl">TEUs</span></div>
     <div class="save-status saved" id="saveStatus">
       <div class="save-dot"></div>
@@ -401,19 +464,34 @@
 </header>
  
 <div class="app">
+  <!-- SIDEBAR -->
   <div class="sidebar">
+    <h3>// Piso activo</h3>
+    <div class="floor-selector">
+      <div class="floor-btn active floor1" id="floorBtn1" onclick="setFloor(1)">
+        <span class="floor-icon">🟩</span>
+        PISO 1 — BASE
+        <span class="floor-stats" id="f1stats">0 cont.</span>
+      </div>
+      <div class="floor-btn floor2" id="floorBtn2" onclick="setFloor(2)">
+        <span class="floor-icon">🟧</span>
+        PISO 2 — APILADO
+        <span class="floor-stats" id="f2stats">0 cont.</span>
+      </div>
+    </div>
+ 
     <h3>// Agregar</h3>
     <div class="container-card c20" draggable="true" data-type="20" id="card20">
       <div class="size-badge">20'</div>
-      <div class="desc">CONTENEDOR ESTÁNDAR</div>
-      <div class="dims">6.1m × 2.44m × 2.59m</div>
+      <div class="desc">ESTÁNDAR</div>
+      <div class="dims">6.1m × 2.44m</div>
     </div>
     <div class="container-card c40" draggable="true" data-type="40" id="card40">
       <div class="size-badge">40'</div>
-      <div class="desc">CONTENEDOR LARGO</div>
-      <div class="dims">12.2m × 2.44m × 2.59m</div>
+      <div class="desc">LARGO</div>
+      <div class="dims">12.2m × 2.44m</div>
     </div>
-    <div class="drag-hint">↑ Arrastrá al patio o hacé clic</div>
+    <div class="drag-hint">↑ Arrastrá o hacé clic</div>
  
     <h3>// Orientación</h3>
     <div class="orient-btns">
@@ -438,38 +516,68 @@
  
     <div class="delete-zone" id="deleteZone">
       <span class="icon">🗑</span>
-      Soltá aquí para eliminar
+      Soltá o clic para eliminar
     </div>
  
     <h3>// Referencia</h3>
     <div class="legend">
-      <div class="legend-item"><div class="legend-box" style="background:#1a4a2e;border-color:#2ecc71"></div> 20 pies</div>
-      <div class="legend-item"><div class="legend-box" style="background:#0d2b4a;border-color:#3498db"></div> 40 pies</div>
+      <div class="legend-item"><div class="legend-box" style="background:#1a4a2e;border-color:#2ecc71"></div> 20'</div>
+      <div class="legend-item"><div class="legend-box" style="background:#0d2b4a;border-color:#3498db"></div> 40'</div>
     </div>
  
     <button class="btn btn-danger" onclick="clearAll()">Limpiar todo</button>
   </div>
  
+  <!-- MAIN -->
   <div class="main">
     <div class="toolbar">
-      <div style="display:flex;align-items:center;gap:6px"><div class="dot"></div>PATIO ACTIVO</div>
+      <div style="display:flex;align-items:center;gap:5px"><div class="dot"></div>PATIO ACTIVO</div>
       <span>│</span>
-      <span>GRILLA: <span style="color:var(--text)">20 × 12</span></span>
+      <span>GRILLA: <span style="color:var(--text)">40 × 24</span></span>
       <span>│</span>
-      <span id="connectedUsers" style="color:var(--c20)">● CONECTADO</span>
+      <span id="activeFloorLabel" style="color:var(--c20)">● PISO 1 ACTIVO</span>
+      <span>│</span>
+      <span style="color:var(--text-dim)">R=rotar • DEL=eliminar</span>
     </div>
-    <div class="grid-wrap">
-      <div class="yard-label">PATIO DE CONTENEDORES — SECTOR A</div>
-      <div class="col-labels" id="colLabels"></div>
-      <div class="grid-container">
-        <div class="row-labels" id="rowLabels"></div>
-        <div class="grid" id="grid"></div>
+ 
+    <!-- Floor tabs -->
+    <div class="floor-tabs">
+      <div class="floor-tab active f1" id="tab1" onclick="setFloor(1)">
+        🟩 PISO 1 — BASE
+        <span class="tab-count" id="tab1count">0 contenedores</span>
+      </div>
+      <div class="floor-tab f2" id="tab2" onclick="setFloor(2)">
+        🟧 PISO 2 — APILADO
+        <span class="tab-count" id="tab2count">0 contenedores</span>
       </div>
     </div>
+ 
+    <div class="grid-wrap" id="gridWrap">
+      <!-- Floor 1 -->
+      <div id="floorView1">
+        <div class="yard-label f1">PISO 1 — NIVEL BASE — SECTOR A</div>
+        <div class="col-labels" id="colLabels1"></div>
+        <div class="grid-container">
+          <div class="row-labels" id="rowLabels1"></div>
+          <div class="grid floor1-grid" id="grid1"></div>
+        </div>
+      </div>
+ 
+      <!-- Floor 2 -->
+      <div id="floorView2" style="display:none">
+        <div class="yard-label f2">PISO 2 — NIVEL APILADO — SECTOR A</div>
+        <div class="col-labels" id="colLabels2"></div>
+        <div class="grid-container">
+          <div class="row-labels" id="rowLabels2"></div>
+          <div class="grid floor2-grid" id="grid2"></div>
+        </div>
+      </div>
+    </div>
+ 
     <div class="info-panel">
       <span id="infoSelected" class="selected-info"></span>
       <span id="infoPos"></span>
-      <span class="hint">DRAG para mover • CLIC para seleccionar • R para rotar • DEL para eliminar</span>
+      <span class="hint">DRAG para mover • CLIC para seleccionar • R rotar • DEL eliminar • Cambiá de piso con las pestañas</span>
     </div>
   </div>
 </div>
@@ -496,6 +604,13 @@
         <option value="V">Vertical</option>
       </select>
     </div>
+    <div class="form-group">
+      <label>Piso</label>
+      <select id="modalFloor">
+        <option value="1">Piso 1 — Base</option>
+        <option value="2">Piso 2 — Apilado</option>
+      </select>
+    </div>
     <div class="modal-btns">
       <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-accent" onclick="addFromModal()">Agregar</button>
@@ -503,7 +618,7 @@
   </div>
 </div>
  
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -517,15 +632,16 @@
     appId: "1:1045884536319:web:93c52a4cd473c809bfd3ca"
   };
  
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const yardDoc = doc(db, "yard", "layout");
+  const fbApp = initializeApp(firebaseConfig);
+  const db = getFirestore(fbApp);
+  const yardDoc = doc(db, "yard", "layout_v3");
  
-  // ── APP STATE ──────────────────────────────────────────────
-  const COLS = 20, ROWS = 12, CELL = 48;
+  // ── STATE ──────────────────────────────────────────────────
+  const COLS = 40, ROWS = 24, CELL = 48;
   let orientation = 'H';
   let selectedColor = '#2ecc71';
-  let containers = [];
+  let activeFloor = 1;
+  let containers = [];   // { id, type, col, row, orient, color, label, floor }
   let selectedId = null;
   let dragType = null;
   let dragContainer = null;
@@ -534,23 +650,19 @@
   let saveTimeout = null;
   let isRemoteUpdate = false;
  
-  const grid = document.getElementById('grid');
-  const colLabels = document.getElementById('colLabels');
-  const rowLabels = document.getElementById('rowLabels');
- 
-  // ── BUILD GRID ─────────────────────────────────────────────
-  function buildGrid() {
+  // ── BUILD GRIDS ────────────────────────────────────────────
+  function buildGrid(gridEl, colLabelsEl, rowLabelsEl, floorNum) {
     for (let c = 1; c <= COLS; c++) {
       const lbl = document.createElement('div');
       lbl.className = 'col-label';
       lbl.textContent = c;
-      colLabels.appendChild(lbl);
+      colLabelsEl.appendChild(lbl);
     }
     for (let r = 1; r <= ROWS; r++) {
       const lbl = document.createElement('div');
       lbl.className = 'row-label';
       lbl.textContent = String.fromCharCode(64 + r);
-      rowLabels.appendChild(lbl);
+      rowLabelsEl.appendChild(lbl);
     }
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
@@ -558,14 +670,25 @@
         cell.className = 'cell';
         cell.dataset.r = r;
         cell.dataset.c = c;
+        cell.dataset.floor = floorNum;
         cell.addEventListener('dragover', onCellDragOver);
-        cell.addEventListener('dragleave', () => {});
         cell.addEventListener('drop', onCellDrop);
         cell.addEventListener('click', onCellClick);
-        grid.appendChild(cell);
+        gridEl.appendChild(cell);
       }
     }
   }
+ 
+  buildGrid(
+    document.getElementById('grid1'),
+    document.getElementById('colLabels1'),
+    document.getElementById('rowLabels1'), 1
+  );
+  buildGrid(
+    document.getElementById('grid2'),
+    document.getElementById('colLabels2'),
+    document.getElementById('rowLabels2'), 2
+  );
  
   // ── HELPERS ────────────────────────────────────────────────
   function containerSize(type, orient) {
@@ -573,10 +696,11 @@
     return orient === 'H' ? {w:4,h:1} : {w:1,h:4};
   }
  
-  function canPlace(col, row, w, h, excludeId=null) {
+  function canPlace(col, row, w, h, floor, excludeId=null) {
     if (col+w > COLS || row+h > ROWS) return false;
     for (const c of containers) {
       if (c.id === excludeId) continue;
+      if (c.floor !== floor) continue;
       const cs = containerSize(c.type, c.orient);
       if (col < c.col+cs.w && col+w > c.col && row < c.row+cs.h && row+h > c.row) return false;
     }
@@ -592,11 +716,12 @@
     document.querySelectorAll('.cell').forEach(c => c.classList.remove('highlight','invalid'));
   }
  
-  function highlightCells(col, row, w, h, valid) {
+  function highlightCells(col, row, w, h, valid, floor) {
     clearHighlights();
-    for (let r = row; r < row+h && r < ROWS; r++) {
-      for (let c = col; c < col+w && c < COLS; c++) {
-        const cell = grid.querySelector(`[data-r="${r}"][data-c="${c}"]`);
+    const gridEl = floor === 1 ? document.getElementById('grid1') : document.getElementById('grid2');
+    for (let r2 = row; r2 < row+h && r2 < ROWS; r2++) {
+      for (let c2 = col; c2 < col+w && c2 < COLS; c2++) {
+        const cell = gridEl.querySelector(`[data-r="${r2}"][data-c="${c2}"]`);
         if (cell) cell.classList.add(valid ? 'highlight' : 'invalid');
       }
     }
@@ -606,25 +731,26 @@
   function createPiece(container) {
     const cs = containerSize(container.type, container.orient);
     const el = document.createElement('div');
-    el.className = 'container-piece';
+    el.className = 'container-piece' + (container.floor === 2 ? ' floor2-piece' : '');
     el.id = 'piece-'+container.id;
     el.style.left = (container.col * CELL) + 'px';
     el.style.top = (container.row * CELL) + 'px';
     el.style.width = (cs.w * CELL - 2) + 'px';
     el.style.height = (cs.h * CELL - 2) + 'px';
-    const col = container.color || (container.type === '20' ? '#2ecc71' : '#3498db');
-    el.style.background = hexToRgba(col, 0.18);
+    const col = container.color || '#2ecc71';
+    el.style.background = hexToRgba(col, container.floor === 2 ? 0.22 : 0.16);
     el.style.borderColor = col;
     el.style.color = col;
     el.style.boxShadow = `inset 0 0 20px ${hexToRgba(col,0.08)}`;
-    el.innerHTML = `<div class="piece-id">${container.label}</div><div class="piece-size">${container.type}'</div>`;
+    if (container.floor === 2) el.style.borderStyle = 'dashed';
+    el.innerHTML = `<div class="piece-id">${container.label}</div><div class="piece-size">${container.type}'</div><div class="piece-floor">P${container.floor}</div>`;
     el.draggable = true;
     el.dataset.id = container.id;
     el.addEventListener('click', (e) => { e.stopPropagation(); selectContainer(container.id); });
     el.addEventListener('dragstart', (e) => {
       dragType = 'move'; dragContainer = container; selectedId = container.id;
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', container.id);
+      e.dataTransfer.setData('text/plain', String(container.id));
       setTimeout(() => { el.style.opacity = '0.3'; }, 0);
     });
     el.addEventListener('dragend', () => { el.style.opacity = '1'; clearHighlights(); });
@@ -633,31 +759,75 @@
  
   function renderAll() {
     document.querySelectorAll('.container-piece').forEach(e => e.remove());
-    for (const c of containers) grid.appendChild(createPiece(c));
-    updateStats();
+    // Reset stacking indicators
+    document.querySelectorAll('.cell').forEach(c => c.classList.remove('has-above'));
+ 
+    for (const c of containers) {
+      const gridEl = c.floor === 1 ? document.getElementById('grid1') : document.getElementById('grid2');
+      gridEl.appendChild(createPiece(c));
+    }
+ 
+    // Mark floor1 cells that have something stacked above
+    const floor2Containers = containers.filter(c => c.floor === 2);
+    for (const c2 of floor2Containers) {
+      const cs = containerSize(c2.type, c2.orient);
+      const grid1 = document.getElementById('grid1');
+      for (let r = c2.row; r < c2.row+cs.h; r++) {
+        for (let cc = c2.col; cc < c2.col+cs.w; cc++) {
+          const cell = grid1.querySelector(`[data-r="${r}"][data-c="${cc}"]`);
+          if (cell) cell.classList.add('has-above');
+        }
+      }
+    }
+ 
     if (selectedId) {
       const el = document.getElementById('piece-'+selectedId);
       if (el) el.classList.add('selected');
     }
+    updateStats();
   }
  
   function updateStats() {
-    const t20 = containers.filter(c => c.type === '20').length;
-    const t40 = containers.filter(c => c.type === '40').length;
-    document.getElementById('stat-20').textContent = t20;
-    document.getElementById('stat-40').textContent = t40;
-    document.getElementById('stat-total').textContent = t20 + t40;
-    document.getElementById('stat-teu').textContent = t20 + t40*2;
+    const p1 = containers.filter(c => c.floor === 1);
+    const p2 = containers.filter(c => c.floor === 2);
+    const total = containers.length;
+    const teu = containers.reduce((a,c) => a + (c.type === '20' ? 1 : 2), 0);
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-p1').textContent = p1.length;
+    document.getElementById('stat-p2').textContent = p2.length;
+    document.getElementById('stat-teu').textContent = teu;
+    document.getElementById('f1stats').textContent = p1.length + ' cont.';
+    document.getElementById('f2stats').textContent = p2.length + ' cont.';
+    document.getElementById('tab1count').textContent = p1.length + ' contenedores';
+    document.getElementById('tab2count').textContent = p2.length + ' contenedores';
   }
  
   function selectContainer(id) {
     selectedId = id;
     document.querySelectorAll('.container-piece').forEach(el => el.classList.toggle('selected', el.dataset.id == id));
     const c = containers.find(x => x.id == id);
-    if (c) document.getElementById('infoSelected').textContent = `▶ ${c.label} — ${c.type}' — ${c.orient === 'H' ? 'Horizontal' : 'Vertical'}`;
+    if (c) document.getElementById('infoSelected').textContent = `▶ ${c.label} — ${c.type}' — ${c.orient==='H'?'Horiz':'Vert'} — Piso ${c.floor}`;
   }
  
-  // ── FIREBASE SAVE/LOAD ─────────────────────────────────────
+  // ── FLOOR SWITCH ───────────────────────────────────────────
+  window.setFloor = function(f) {
+    activeFloor = f;
+    document.getElementById('floorView1').style.display = f === 1 ? 'block' : 'none';
+    document.getElementById('floorView2').style.display = f === 2 ? 'block' : 'none';
+    document.getElementById('tab1').className = 'floor-tab' + (f===1?' active f1':'');
+    document.getElementById('tab2').className = 'floor-tab' + (f===2?' active f2':'');
+    document.getElementById('floorBtn1').className = 'floor-btn' + (f===1?' active floor1':'');
+    document.getElementById('floorBtn2').className = 'floor-btn' + (f===2?' active floor2':'');
+    const label = document.getElementById('activeFloorLabel');
+    label.textContent = f===1 ? '● PISO 1 ACTIVO' : '● PISO 2 ACTIVO';
+    label.style.color = f===1 ? 'var(--c20)' : '#e67e22';
+    document.getElementById('modalFloor').value = String(f);
+    selectedId = null;
+    document.querySelectorAll('.container-piece').forEach(el => el.classList.remove('selected'));
+    document.getElementById('infoSelected').textContent = '';
+  };
+ 
+  // ── FIREBASE ───────────────────────────────────────────────
   function setSaveStatus(status, text) {
     const el = document.getElementById('saveStatus');
     el.className = 'save-status ' + status;
@@ -669,9 +839,8 @@
     try {
       await setDoc(yardDoc, { containers, counter, updatedAt: Date.now() });
       setSaveStatus('saved', 'Guardado ✓');
-    } catch (e) {
+    } catch(e) {
       setSaveStatus('error', 'Error al guardar');
-      console.error(e);
     }
   }
  
@@ -682,7 +851,6 @@
     saveTimeout = setTimeout(saveToFirebase, 800);
   }
  
-  // Listen for real-time changes from Firebase
   onSnapshot(yardDoc, (snapshot) => {
     if (snapshot.exists()) {
       const data = snapshot.data();
@@ -694,17 +862,16 @@
       isRemoteUpdate = false;
     }
     document.getElementById('loadingOverlay').style.display = 'none';
-  }, (error) => {
-    console.error(error);
+  }, () => {
     setSaveStatus('error', 'Sin conexión');
     document.getElementById('loadingOverlay').style.display = 'none';
   });
  
   // ── ACTIONS ────────────────────────────────────────────────
-  function addContainer(type, col, row, orient, color, label) {
+  function addContainer(type, col, row, orient, color, floor, label) {
     counter++;
-    const lbl = label || (type === '20' ? `C${counter}` : `L${counter}`);
-    containers.push({ id: counter, type, col, row, orient, color, label: lbl });
+    const lbl = label || (type==='20' ? `C${counter}` : `L${counter}`);
+    containers.push({ id: counter, type, col, row, orient, color, label: lbl, floor });
     renderAll();
     scheduleSave();
   }
@@ -713,41 +880,45 @@
     const cs = containerSize(type, orientation);
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
-        if (canPlace(c, r, cs.w, cs.h)) { addContainer(type, c, r, orientation, selectedColor); return; }
+        if (canPlace(c, r, cs.w, cs.h, activeFloor)) {
+          addContainer(type, c, r, orientation, selectedColor, activeFloor);
+          return;
+        }
       }
     }
   }
  
   // ── DRAG & DROP ────────────────────────────────────────────
-  document.getElementById('card20').addEventListener('dragstart', (e) => { dragType = 'new'; dragContainer = null; pendingType = '20'; e.dataTransfer.effectAllowed = 'copy'; });
-  document.getElementById('card40').addEventListener('dragstart', (e) => { dragType = 'new'; dragContainer = null; pendingType = '40'; e.dataTransfer.effectAllowed = 'copy'; });
+  document.getElementById('card20').addEventListener('dragstart', (e) => { dragType='new'; dragContainer=null; pendingType='20'; e.dataTransfer.effectAllowed='copy'; });
+  document.getElementById('card40').addEventListener('dragstart', (e) => { dragType='new'; dragContainer=null; pendingType='40'; e.dataTransfer.effectAllowed='copy'; });
   document.getElementById('card20').addEventListener('click', () => quickAdd('20'));
   document.getElementById('card40').addEventListener('click', () => quickAdd('40'));
  
   function onCellDragOver(e) {
     e.preventDefault();
     const cell = e.currentTarget;
-    const col = parseInt(cell.dataset.c), row = parseInt(cell.dataset.r);
+    const col = parseInt(cell.dataset.c), row = parseInt(cell.dataset.r), floor = parseInt(cell.dataset.floor);
     const type = dragContainer ? dragContainer.type : pendingType;
     const orient = dragContainer ? dragContainer.orient : orientation;
     const cs = containerSize(type, orient);
-    const valid = canPlace(col, row, cs.w, cs.h, dragContainer ? dragContainer.id : null);
-    highlightCells(col, row, cs.w, cs.h, valid);
-    document.getElementById('infoPos').textContent = `Col ${col+1} / Fila ${String.fromCharCode(65+row)}`;
+    const excludeId = dragContainer ? dragContainer.id : null;
+    const valid = canPlace(col, row, cs.w, cs.h, floor, excludeId);
+    highlightCells(col, row, cs.w, cs.h, valid, floor);
+    document.getElementById('infoPos').textContent = `Col ${col+1} / Fila ${String.fromCharCode(65+row)} / Piso ${floor}`;
   }
  
   function onCellDrop(e) {
     e.preventDefault();
     const cell = e.currentTarget;
-    const col = parseInt(cell.dataset.c), row = parseInt(cell.dataset.r);
+    const col = parseInt(cell.dataset.c), row = parseInt(cell.dataset.r), floor = parseInt(cell.dataset.floor);
     clearHighlights();
     if (dragType === 'new') {
       const cs = containerSize(pendingType, orientation);
-      if (canPlace(col, row, cs.w, cs.h)) addContainer(pendingType, col, row, orientation, selectedColor);
+      if (canPlace(col, row, cs.w, cs.h, floor)) addContainer(pendingType, col, row, orientation, selectedColor, floor);
     } else if (dragType === 'move' && dragContainer) {
       const cs = containerSize(dragContainer.type, dragContainer.orient);
-      if (canPlace(col, row, cs.w, cs.h, dragContainer.id)) {
-        dragContainer.col = col; dragContainer.row = row;
+      if (canPlace(col, row, cs.w, cs.h, floor, dragContainer.id)) {
+        dragContainer.col = col; dragContainer.row = row; dragContainer.floor = floor;
         renderAll(); scheduleSave();
       }
     }
@@ -761,70 +932,77 @@
   }
  
   // Delete zone
-  const deleteZone = document.getElementById('deleteZone');
-  deleteZone.addEventListener('dragover', (e) => { e.preventDefault(); deleteZone.classList.add('drag-over'); });
-  deleteZone.addEventListener('dragleave', () => deleteZone.classList.remove('drag-over'));
-  deleteZone.addEventListener('drop', (e) => {
-    e.preventDefault(); deleteZone.classList.remove('drag-over');
-    if (dragContainer) { containers = containers.filter(c => c.id !== dragContainer.id); dragContainer = null; dragType = null; selectedId = null; renderAll(); scheduleSave(); }
+  const dz = document.getElementById('deleteZone');
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', (e) => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    if (dragContainer) { containers = containers.filter(c => c.id !== dragContainer.id); dragContainer=null; dragType=null; selectedId=null; renderAll(); scheduleSave(); }
   });
-  deleteZone.addEventListener('click', () => {
-    if (selectedId) { containers = containers.filter(c => c.id != selectedId); selectedId = null; document.getElementById('infoSelected').textContent = ''; renderAll(); scheduleSave(); }
+  dz.addEventListener('click', () => {
+    if (selectedId) { containers = containers.filter(c => c.id != selectedId); selectedId=null; document.getElementById('infoSelected').textContent=''; renderAll(); scheduleSave(); }
   });
  
   // Keyboard
   document.addEventListener('keydown', (e) => {
-    if ((e.key === 'Delete' || e.key === 'Backspace') && selectedId && !['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
+    if ((e.key==='Delete'||e.key==='Backspace') && selectedId && !['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
       containers = containers.filter(c => c.id != selectedId);
-      selectedId = null; document.getElementById('infoSelected').textContent = '';
+      selectedId=null; document.getElementById('infoSelected').textContent='';
       renderAll(); scheduleSave();
     }
-    if ((e.key === 'r' || e.key === 'R') && selectedId && !['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
-      const c = containers.find(x => x.id == selectedId);
+    if ((e.key==='r'||e.key==='R') && selectedId && !['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
+      const c = containers.find(x => x.id==selectedId);
       if (c) {
-        const newOrient = c.orient === 'H' ? 'V' : 'H';
+        const newOrient = c.orient==='H'?'V':'H';
         const cs = containerSize(c.type, newOrient);
-        if (canPlace(c.col, c.row, cs.w, cs.h, c.id)) { c.orient = newOrient; renderAll(); selectContainer(selectedId); scheduleSave(); }
+        if (canPlace(c.col, c.row, cs.w, cs.h, c.floor, c.id)) { c.orient=newOrient; renderAll(); selectContainer(selectedId); scheduleSave(); }
       }
     }
   });
  
   // Modal
-  window.openModal = () => { document.getElementById('modalOverlay').classList.add('show'); document.getElementById('modalLabel').value = ''; document.getElementById('modalLabel').focus(); };
+  window.openModal = () => {
+    document.getElementById('modalOverlay').classList.add('show');
+    document.getElementById('modalLabel').value='';
+    document.getElementById('modalFloor').value = String(activeFloor);
+    document.getElementById('modalLabel').focus();
+  };
   window.closeModal = () => document.getElementById('modalOverlay').classList.remove('show');
  
   window.addFromModal = () => {
     const type = document.getElementById('modalSize').value;
     const label = document.getElementById('modalLabel').value.trim() || null;
     const orient = document.getElementById('modalOrient').value;
+    const floor = parseInt(document.getElementById('modalFloor').value);
     const cs = containerSize(type, orient);
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        if (canPlace(c, r, cs.w, cs.h)) { addContainer(type, c, r, orient, selectedColor, label); closeModal(); return; }
+    for (let r=0; r<ROWS; r++) {
+      for (let c=0; c<COLS; c++) {
+        if (canPlace(c,r,cs.w,cs.h,floor)) { addContainer(type,c,r,orient,selectedColor,floor,label); closeModal(); return; }
       }
     }
-    alert('No hay espacio disponible.');
+    alert('No hay espacio disponible en ese piso.');
   };
  
-  document.getElementById('modalOverlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
-  document.getElementById('modalLabel').addEventListener('keydown', (e) => { if (e.key === 'Enter') addFromModal(); if (e.key === 'Escape') closeModal(); });
+  document.getElementById('modalOverlay').addEventListener('click', (e) => { if(e.target===e.currentTarget) closeModal(); });
+  document.getElementById('modalLabel').addEventListener('keydown', (e) => { if(e.key==='Enter') addFromModal(); if(e.key==='Escape') closeModal(); });
  
   window.clearAll = () => {
-    if (confirm('¿Eliminar todos los contenedores?')) { containers = []; selectedId = null; document.getElementById('infoSelected').textContent = ''; renderAll(); scheduleSave(); }
+    if (confirm('¿Eliminar TODOS los contenedores de ambos pisos?')) {
+      containers=[]; selectedId=null;
+      document.getElementById('infoSelected').textContent='';
+      renderAll(); scheduleSave();
+    }
   };
  
   window.setOrientation = (o) => {
-    orientation = o;
-    document.querySelectorAll('.orient-btn').forEach(b => b.classList.toggle('active', b.dataset.orient === o));
+    orientation=o;
+    document.querySelectorAll('.orient-btn').forEach(b => b.classList.toggle('active', b.dataset.orient===o));
   };
  
   window.setColor = (el) => {
-    selectedColor = el.dataset.color;
-    document.querySelectorAll('.color-dot').forEach(d => d.classList.toggle('active', d === el));
+    selectedColor=el.dataset.color;
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.toggle('active', d===el));
   };
- 
-  // Init
-  buildGrid();
 </script>
 </body>
 </html>
