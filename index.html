@@ -220,6 +220,26 @@
   .btn-danger:hover { background: var(--danger); color: #fff; }
   .btn-accent { background: var(--accent); color: #000; }
   .btn-accent:hover { background: #e09400; }
+  .btn-pdf {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    color: #fff; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-pdf:hover { background: linear-gradient(135deg, #a93226, #c0392b); }
+  .btn-pdf:disabled { opacity: 0.5; cursor: not-allowed; }
+ 
+  /* PDF generating overlay */
+  .pdf-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75); z-index: 300;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 14px;
+  }
+  .pdf-overlay.show { display: flex; }
+  .pdf-overlay .pdf-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: #fff; }
+  .pdf-overlay .pdf-sub { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text-dim); letter-spacing: 2px; }
+  .pdf-bar { width: 200px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .pdf-bar-inner { height: 100%; background: #e74c3c; border-radius: 2px; animation: loading 1s infinite; }
  
   .delete-zone {
     border: 1px dashed var(--danger);
@@ -525,6 +545,11 @@
       <div class="legend-item"><div class="legend-box" style="background:#0d2b4a;border-color:#3498db"></div> 40'</div>
     </div>
  
+    <h3>// Exportar</h3>
+    <button class="btn btn-pdf" id="btnPdf" onclick="exportPDF()">
+      📄 Exportar PDF
+    </button>
+ 
     <button class="btn btn-danger" onclick="clearAll()">Limpiar todo</button>
   </div>
  
@@ -617,6 +642,17 @@
     </div>
   </div>
 </div>
+ 
+<!-- PDF generating overlay -->
+<div class="pdf-overlay" id="pdfOverlay">
+  <div class="pdf-title">GENERANDO PDF</div>
+  <div class="pdf-bar"><div class="pdf-bar-inner"></div></div>
+  <div class="pdf-sub" id="pdfStatus">Preparando patio...</div>
+</div>
+ 
+<!-- jsPDF + html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
  
 <!-- Firebase -->
 <script type="module">
@@ -1003,6 +1039,261 @@
     selectedColor=el.dataset.color;
     document.querySelectorAll('.color-dot').forEach(d => d.classList.toggle('active', d===el));
   };
+ 
+  // ── PDF EXPORT ─────────────────────────────────────────────
+  window.exportPDF = async function() {
+    const btn = document.getElementById('btnPdf');
+    const overlay = document.getElementById('pdfOverlay');
+    const statusEl = document.getElementById('pdfStatus');
+    btn.disabled = true;
+    overlay.classList.add('show');
+ 
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const now = new Date().toLocaleString('es-UY');
+ 
+      // ── PÁGINA 1: RESUMEN ──────────────────────────────────
+      statusEl.textContent = 'Generando resumen...';
+      await new Promise(r => setTimeout(r, 100));
+ 
+      // Background
+      pdf.setFillColor(26, 29, 31);
+      pdf.rect(0, 0, pageW, pageH, 'F');
+ 
+      // Header bar
+      pdf.setFillColor(34, 38, 42);
+      pdf.rect(0, 0, pageW, 22, 'F');
+      pdf.setDrawColor(245, 166, 35);
+      pdf.setLineWidth(0.8);
+      pdf.line(0, 22, pageW, 22);
+ 
+      // Title
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(22);
+      pdf.setTextColor(245, 166, 35);
+      pdf.text('YARD — DEPÓSITO DE CONTENEDORES', 10, 14);
+ 
+      pdf.setFontSize(9);
+      pdf.setTextColor(107, 122, 141);
+      pdf.text(`Generado: ${now}`, pageW - 10, 14, { align: 'right' });
+ 
+      // Page label
+      pdf.setFontSize(11);
+      pdf.setTextColor(255, 255, 255);
+      pdf.text('RESUMEN GENERAL', 10, 32);
+      pdf.setDrawColor(245, 166, 35);
+      pdf.setLineWidth(0.4);
+      pdf.line(10, 34, pageW - 10, 34);
+ 
+      // Stats cards
+      const p1 = containers.filter(c => c.floor === 1);
+      const p2 = containers.filter(c => c.floor === 2);
+      const total = containers.length;
+      const teu = containers.reduce((a,c) => a + (c.type==='20'?1:2), 0);
+      const t20 = containers.filter(c => c.type==='20').length;
+      const t40 = containers.filter(c => c.type==='40').length;
+ 
+      const cards = [
+        { label: 'TOTAL CONTENEDORES', value: String(total), color: [245,166,35] },
+        { label: 'PISO 1 — BASE', value: String(p1.length), color: [46,204,113] },
+        { label: 'PISO 2 — APILADO', value: String(p2.length), color: [230,126,34] },
+        { label: 'CONTENEDORES 20\'', value: String(t20), color: [46,204,113] },
+        { label: 'CONTENEDORES 40\'', value: String(t40), color: [52,152,219] },
+        { label: 'TOTAL TEUs', value: String(teu), color: [245,166,35] },
+      ];
+ 
+      const cardW = (pageW - 20 - 10) / 3;
+      const cardH = 28;
+      cards.forEach((card, i) => {
+        const col = i % 3;
+        const row = Math.floor(i / 3);
+        const x = 10 + col * (cardW + 5);
+        const y = 40 + row * (cardH + 6);
+        pdf.setFillColor(34, 38, 42);
+        pdf.roundedRect(x, y, cardW, cardH, 2, 2, 'F');
+        pdf.setDrawColor(...card.color);
+        pdf.setLineWidth(0.5);
+        pdf.roundedRect(x, y, cardW, cardH, 2, 2, 'S');
+        // Left accent bar
+        pdf.setFillColor(...card.color);
+        pdf.rect(x, y, 2, cardH, 'F');
+        // Value
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(20);
+        pdf.setTextColor(...card.color);
+        pdf.text(card.value, x + cardW/2, y + 16, { align: 'center' });
+        // Label
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(7);
+        pdf.setTextColor(107, 122, 141);
+        pdf.text(card.label, x + cardW/2, y + 23, { align: 'center' });
+      });
+ 
+      // Container list table
+      const tableY = 40 + 2*(cardH+6) + 10;
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(10);
+      pdf.setTextColor(255, 255, 255);
+      pdf.text('LISTADO DE CONTENEDORES', 10, tableY);
+      pdf.setDrawColor(245, 166, 35);
+      pdf.line(10, tableY+2, pageW-10, tableY+2);
+ 
+      // Table headers
+      const cols = ['#', 'ETIQUETA', 'TIPO', 'ORIENTACIÓN', 'PISO', 'COLUMNA', 'FILA'];
+      const colWidths = [10, 45, 22, 28, 20, 22, 22];
+      let tx = 10;
+      pdf.setFontSize(7);
+      pdf.setTextColor(107, 122, 141);
+      pdf.setFillColor(44, 49, 54);
+      pdf.rect(10, tableY+4, pageW-20, 7, 'F');
+      cols.forEach((col, i) => {
+        pdf.text(col, tx + 2, tableY+9);
+        tx += colWidths[i];
+      });
+ 
+      // Table rows
+      let rowY = tableY + 14;
+      const sortedContainers = [...containers].sort((a,b) => a.floor - b.floor || a.row - b.row || a.col - b.col);
+      sortedContainers.forEach((c, idx) => {
+        if (rowY > pageH - 15) return; // skip if no space
+        if (idx % 2 === 0) {
+          pdf.setFillColor(34, 38, 42);
+          pdf.rect(10, rowY-4, pageW-20, 6, 'F');
+        }
+        const rowData = [
+          String(idx+1),
+          c.label,
+          c.type + ' pies',
+          c.orient === 'H' ? 'Horizontal' : 'Vertical',
+          'Piso ' + c.floor,
+          String(c.col+1),
+          String.fromCharCode(65+c.row)
+        ];
+        tx = 10;
+        pdf.setTextColor(212, 219, 227);
+        pdf.setFontSize(7);
+        rowData.forEach((val, i) => {
+          if (i === 0) pdf.setTextColor(107,122,141);
+          else if (i === 4) pdf.setTextColor(c.floor===1 ? 46 : 230, c.floor===1 ? 204 : 126, c.floor===1 ? 113 : 34);
+          else pdf.setTextColor(212, 219, 227);
+          pdf.text(val, tx + 2, rowY);
+          tx += colWidths[i];
+        });
+        rowY += 6;
+      });
+ 
+      if (containers.length === 0) {
+        pdf.setTextColor(107, 122, 141);
+        pdf.setFontSize(10);
+        pdf.text('No hay contenedores en el patio.', pageW/2, tableY+20, { align: 'center' });
+      }
+ 
+      // ── PÁGINA 2: PISO 1 ──────────────────────────────────
+      statusEl.textContent = 'Capturando Piso 1...';
+      await new Promise(r => setTimeout(r, 100));
+ 
+      // Show floor 1
+      document.getElementById('floorView1').style.display = 'block';
+      document.getElementById('floorView2').style.display = 'none';
+      await new Promise(r => setTimeout(r, 200));
+ 
+      const grid1El = document.getElementById('grid1');
+      const canvas1 = await html2canvas(grid1El, {
+        backgroundColor: '#22262a',
+        scale: 0.4,
+        useCORS: true,
+        logging: false
+      });
+ 
+      pdf.addPage();
+      pdf.setFillColor(26, 29, 31);
+      pdf.rect(0, 0, pageW, pageH, 'F');
+      pdf.setFillColor(34, 38, 42);
+      pdf.rect(0, 0, pageW, 22, 'F');
+      pdf.setDrawColor(46, 204, 113);
+      pdf.setLineWidth(0.8);
+      pdf.line(0, 22, pageW, 22);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(20);
+      pdf.setTextColor(46, 204, 113);
+      pdf.text('PISO 1 — NIVEL BASE', 10, 14);
+      pdf.setFontSize(9);
+      pdf.setTextColor(107,122,141);
+      pdf.text(`${p1.length} contenedores | ${p1.reduce((a,c)=>a+(c.type==='20'?1:2),0)} TEUs`, pageW-10, 14, { align:'right' });
+ 
+      const img1 = canvas1.toDataURL('image/jpeg', 0.85);
+      const imgW = pageW - 20;
+      const imgH = (canvas1.height / canvas1.width) * imgW;
+      const finalH1 = Math.min(imgH, pageH - 32);
+      pdf.addImage(img1, 'JPEG', 10, 26, imgW, finalH1);
+ 
+      // ── PÁGINA 3: PISO 2 ──────────────────────────────────
+      statusEl.textContent = 'Capturando Piso 2...';
+      await new Promise(r => setTimeout(r, 100));
+ 
+      document.getElementById('floorView1').style.display = 'none';
+      document.getElementById('floorView2').style.display = 'block';
+      await new Promise(r => setTimeout(r, 200));
+ 
+      const grid2El = document.getElementById('grid2');
+      const canvas2 = await html2canvas(grid2El, {
+        backgroundColor: '#22262a',
+        scale: 0.4,
+        useCORS: true,
+        logging: false
+      });
+ 
+      pdf.addPage();
+      pdf.setFillColor(26, 29, 31);
+      pdf.rect(0, 0, pageW, pageH, 'F');
+      pdf.setFillColor(34, 38, 42);
+      pdf.rect(0, 0, pageW, 22, 'F');
+      pdf.setDrawColor(230, 126, 34);
+      pdf.setLineWidth(0.8);
+      pdf.line(0, 22, pageW, 22);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(20);
+      pdf.setTextColor(230, 126, 34);
+      pdf.text('PISO 2 — NIVEL APILADO', 10, 14);
+      pdf.setFontSize(9);
+      pdf.setTextColor(107,122,141);
+      pdf.text(`${p2.length} contenedores | ${p2.reduce((a,c)=>a+(c.type==='20'?1:2),0)} TEUs`, pageW-10, 14, { align:'right' });
+ 
+      const img2 = canvas2.toDataURL('image/jpeg', 0.85);
+      const imgH2 = (canvas2.height / canvas2.width) * imgW;
+      const finalH2 = Math.min(imgH2, pageH - 32);
+      pdf.addImage(img2, 'JPEG', 10, 26, imgW, finalH2);
+ 
+      // Restore active floor view
+      document.getElementById('floorView1').style.display = activeFloor===1 ? 'block' : 'none';
+      document.getElementById('floorView2').style.display = activeFloor===2 ? 'block' : 'none';
+ 
+      // Page numbers
+      const totalPages = pdf.internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(7);
+        pdf.setTextColor(107, 122, 141);
+        pdf.text(`Página ${i} de ${totalPages}  —  YARD Container Layout`, pageW/2, pageH-4, { align:'center' });
+      }
+ 
+      // Save
+      statusEl.textContent = 'Descargando...';
+      const fileName = `deposito_contenedores_${new Date().toISOString().slice(0,10)}.pdf`;
+      pdf.save(fileName);
+ 
+    } catch(err) {
+      console.error(err);
+      alert('Error al generar el PDF. Intentá de nuevo.');
+    } finally {
+      overlay.classList.remove('show');
+      btn.disabled = false;
+    }
+  };
+ 
 </script>
 </body>
 </html>
